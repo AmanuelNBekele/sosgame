@@ -65,7 +65,7 @@ class SOS:
 
     def create_board(self, board_size = 8): #board size is defaulted to 8
         
-        if self.board_frame is not None: # if a board exisits...
+        if self.board_frame is not None: # if a board exisits or is not null...
             self.board_frame.destroy() # destroy the board
         
         # create the board and place it on the grid
@@ -103,7 +103,7 @@ class SOS:
     def simple_game(): 
         pass
     
-    
+
 if __name__ == "__main__": 
     root = tk.Tk()
     app = SOS(root)
