@@ -24,8 +24,6 @@ class SOS:
 
         # call create_board()
         self.create_board()
-
-        # the game starts with the 
     
     def user_interface(self):
 
