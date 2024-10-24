@@ -51,13 +51,13 @@ class SOS:
         tk.Label(root, text = "Board Size").grid(row = 0, column = 6)
         # creating an input box for board size using Entry and placing it on the grid
         self.board_size = tk.StringVar() # making input boxs' text be editable
-        self.boardSize = tk.Entry(root, width = 3, borderwidth = 2, textvariable = self.board_size)
-        self.boardSize.grid(row = 0, column = 7)
+        self.boardSize = tk.Entry(root, width = 3, borderwidth = 2, textvariable = self.board_size) # not able to put .grid here b/c it makes the ui look weird
+        self.boardSize.grid(row = 0, column = 7) # .grid to place the entry box in row 0, column 7 
         
         # set the board size value to be 8 at the start of the game
         self.boardSize.insert(0, "8")
         # creating a space after the input box 
-        tk.Label(root, text = "").grid(row = 0, column = 8)
+        tk.Label(root, text = "").grid(row = 0, column = 8) # .grid to place the space in row0, column 8
 
         tk.Button(root, text = "New Game", command = lambda: self.update_board()).grid(row = 2, column = 6) # create a button named newGame and give it a command
 
@@ -67,10 +67,10 @@ class SOS:
             self.board_frame.destroy() # destroy the board
         
         # create the board and place it on the grid
-        self.board_frame = tk.Frame(root)
+        self.board_frame = tk.Frame(root) # putting .grid here makes the board frame be all over the place 
         # spacer to make the game layout look nice
-        tk.Label(root, text = "").grid(row = 6, column = 1)
-        self.board_frame.grid(row = 7, column = 1, columnspan = 3)
+        tk.Label(root, text = "").grid(row = 6, column = 1) 
+        self.board_frame.grid(row = 7, column = 1, columnspan = 3) # .grid to place the frame in row 7, column 1, and have a column span of 3
         
         # adjust the board size based on the board_size
         for x in range(board_size):
@@ -78,7 +78,7 @@ class SOS:
                 # have each square be a button with a width of 3 and a height of 1
                 tk.Button(self.board_frame, text = '', width = 3, height = 1).grid(row = x, column = y)
         # create a space to make the board look nice
-        tk.Label(root, text = "").grid(row = 8, column = 1)
+        tk.Label(root, text = "").grid(row = 8, column = 1) # .grid to place the space lable in row 8, column 1
 
     def update_board(self): 
         
@@ -88,9 +88,9 @@ class SOS:
         # if the current value is greater than or equal to 3, then the board will update based on the current_value
         if current_value >= 3:
             self.create_board(current_value)
-            print("Button was clicked", current_value) # terminal/output will show that the button was clicked by printing message
+            print("Button was clicked", current_value) # testing button so terminal/output will show that the button was clicked by printing message
         else: # if the current value is anything other greater than or equal to 3, then the user will recieve an error message
-            messagebox.showerror("Error", "Board size must be > 3")
+            messagebox.showerror("Error", "Board size must be > 3") # error message header and error message 
 
     def player_move():
         pass
