@@ -84,6 +84,17 @@ class SOS:
                 self.squares[i][j].config(text=self.red_symbol.get(), fg = "black") 
                 self.current_turn = "Blue"
 
+    # EVERYTHING ABOVE IS AI GENERATED SPRINT 2
+
+
+    def general_game():
+        frozenset
+
+
+    def simple_game():
+        frozenset
+
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = SOS(root)
