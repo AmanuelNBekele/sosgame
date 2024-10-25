@@ -87,12 +87,12 @@ class SOS:
     # EVERYTHING ABOVE IS AI GENERATED SPRINT 2
 
 
-    def general_game():
-        frozenset
+class Simple_Game (SOS):
+    pass
 
 
-    def simple_game():
-        frozenset
+class General_Game(SOS):
+    pass
 
 
 if __name__ == "__main__":
