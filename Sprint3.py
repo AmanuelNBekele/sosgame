@@ -86,21 +86,6 @@ class SOS:
 
     # EVERYTHING ABOVE IS AI GENERATED SPRINT 2
 
-
-class Simple_Game (SOS):
-    pass
-
-
-class General_Game(SOS):
-    pass
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = SOS(root)
-    root.mainloop()
-
-
     # RESOURCES USED LISTED BELOW
     # Youtube: https://www.youtube.com/watch?v=YXPyB4XeYLA
     # Website: https://www.geeksforgeeks.org/tic-tac-toe-game-with-gui-using-tkinter-in-python/
