@@ -84,6 +84,8 @@ class SOS:
                 self.squares[i][j].config(text=self.red_symbol.get(), fg = "black") 
                 self.current_turn = "Blue"
 
+    # EVERYTHING ABOVE IS AI GENERATED SPRINT 2
+
     # RESOURCES USED LISTED BELOW
     # Youtube: https://www.youtube.com/watch?v=YXPyB4XeYLA
     # Website: https://www.geeksforgeeks.org/tic-tac-toe-game-with-gui-using-tkinter-in-python/
@@ -91,5 +93,3 @@ class SOS:
     # Youtube: https://www.youtube.com/watch?v=IJ-iVnN09-8
     # Website: https://www.geeksforgeeks.org/python-tkinter-entry-widget/
     # Sprint 1 & Sprint 2 
-
-    #test
