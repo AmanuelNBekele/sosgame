@@ -98,6 +98,7 @@ class SOS:
         while 0 <= y + 1 < self.board_size.get() and self.squares[x][y +1 ]['text'] == symbol:
             y += 1
             count_sos += 1
+        y = j
         while 0 <= y -1 < self.board_size.get() and self.squares[x][y - 1]['text'] == symbol:
             y -= 1
             count_sos += 1
