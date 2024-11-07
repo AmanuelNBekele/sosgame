@@ -87,6 +87,39 @@ class SOS:
                 self.squares[i][j].config(text=self.red_symbol.get(), fg = "red") 
                 self.current_turn = "Blue"   
 
+    
+    def check_sos(self, i, j):
+        symbol = self.squares[i][j]['text']
+        if symbol == "":
+            return False
+        
+        count_sos = 0
+        x, y = i, j  
+        while 0 <= y + 1 < self.board_size.get() and self.squares[x][y +1 ]['text'] == symbol:
+            y += 1
+            count_sos += 1
+        while 0 <= y -1 < self.board_size.get() and self.squares[x][y - 1]['text'] == symbol:
+            y -= 1
+            count_sos += 1
+        if count_sos >= 2:
+            return True
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # RESOURCES USED LISTED BELOW
     # Youtube: https://www.youtube.com/watch?v=YXPyB4XeYLA
     # Website: https://www.geeksforgeeks.org/tic-tac-toe-game-with-gui-using-tkinter-in-python/
