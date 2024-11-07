@@ -43,6 +43,9 @@ class SOS:
 
         tk.Button(self.root, text="New Game", command = self.reset_board).grid(row = 3, column = 3, columnspan = 3)
 
+        self.turn_label = tk.Label(self.root, text = f"{self.current_turn}'s Turn", font = ("Arial", 12))
+        self.turn_label.grid(row = 4, column = 3, columnspan = 3, pady = 10)
+
     def setup_player_ui(self, color, row):
         tk.Label(self.root, text=f"{color} Player:").grid(row = row, column = 0, padx = 5, pady = 5)
         tk.Radiobutton(self.root, text = "Human", variable = self.blue_player if color == "Blue" else self.red_player, value = 'Human').grid(row = row, column = 1)
