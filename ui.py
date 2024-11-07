@@ -87,6 +87,14 @@ class SOS:
                 self.squares[i][j].config(text=self.red_symbol.get(), fg = "red") 
                 self.current_turn = "Blue"   
 
+            if self.check_sos(i, j):
+                if self.current_turn == "Blue":
+                    self.blue_sos_count += 1
+                else:
+                    self.red_sos_count += 1
+                self.update_score()
+            self. turn_label.config(text = f"{self.current_turn}'s Turn")
+
     
     def check_sos(self, i, j):
         symbol = self.squares[i][j]['text']
@@ -105,6 +113,64 @@ class SOS:
         if count_sos >= 2:
             return True
         
+        count_sos = 0
+        x, y = i, j  
+        while 0 <= x + 1 < self.board_size.get() and self.squares[x + 1][y]['text'] == symbol:
+            x += 1
+            count_sos += 1
+        x = i
+        while 0 <= x -1 < self.board_size.get() and self.squares[x - 1][y]['text'] == symbol:
+            x -= 1
+            count_sos += 1
+        if count_sos >= 2:
+            return True
+        
+        count_sos = 0
+        x, y = i, j
+        while 0 <= x + 1 < self.board_size.get() and 0<= y + 1 < self.board_size.get() and self.squares[x + 1][y + 1]['text'] == symbol:
+            x += 1
+            y += 1
+            count_sos += 1
+        while 0 <= x - 1 < self.board_size.get() and 0 <= y -1 < self.board_size.get() and self.squares[x - 1][y - 1]['text'] == symbol:
+            x -= 1
+            y -= 1
+            count_sos += 1
+        if count_sos >=2:
+            return True
+        
+        count_sos = 0
+        x, y = i, j
+        while 0 <= x + 1 < self.board_size.get() and 0 <= y - 1 < self.board_size.get() and self.squares[x + 1][y - 1]['text'] == symbol:
+            x += 1
+            y -= 1
+            count_sos += 1
+        x,y = i, j
+        while 0 <= x -1 < self.board_size.get() and 0 <= y + 1 < self.board_size.get() and self.squares[x - 1][y + 1]['text'] == symbol:
+            x -= 1
+            y += 1
+            count_sos += 1
+        if count_sos >= 2:
+            return True
+        
+        return False 
+    
+    def update_score(self):
+        score_label = tk.Label(self.root, text = f"Blue: {self.blue_sos_count} - Red: {self.red_sos_count}", font = ("Arial", 12))
+        score_label.grid(row = 5, column = 3, columnspan = 3)
+
+    def end_game(self): 
+        if self.blue_sos_count > self.red_sos_count:
+            winner = "Blue Player Wins!"
+        elif self.red_sos_count > self.blue_sos_count:
+            winner = " Red Player Wins!"
+        else: 
+            winner = "It's a tie!"
+
+        messagebox.showinfo("Game Over", winner)
+                                                                                                                       
+
+
+
 
 
 
