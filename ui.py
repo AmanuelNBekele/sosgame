@@ -17,14 +17,12 @@ class Player:
     def make_move(self, board):
         pass
 
-
 class HumanPlayer(Player):
     def __init__(self, name, symbol="S"):
         super().__init__(name, symbol)
 
     def make_move(self, board):
-        pass
-
+        pass 
 
 class ComputerPlayer(Player):
     def __init__(self, name, symbol="S"):
@@ -35,7 +33,7 @@ class ComputerPlayer(Player):
         return random.choice(empty_cells) if empty_cells else None
 
 class Board:
-    def __init__(self, size=3):
+    def __init__(self, size=8):
         self.size = size
         self.board = [[None for _ in range(size)] for _ in range(size)]
         self.blue_sos_count = 0
@@ -56,10 +54,10 @@ class Board:
         sos_found = []
 
         directions = [
-            ((0, -1), (0, 1)), 
+            ((0, -1), (0, 1)),  
             ((-1, 0), (1, 0)),  
             ((-1, -1), (1, 1)),  
-            ((-1, 1), (1, -1)),  
+            ((-1, 1), (1, -1)), 
         ]
 
         for (dx1, dy1), (dx2, dy2) in directions:
@@ -101,12 +99,12 @@ class Board:
 
 class SOSGame:
     def __init__(self):
-        self.board = Board(3) 
-        self.blue_player = HumanPlayer("Blue", "S")
-        self.red_player = ComputerPlayer("Red", "S") 
+        self.board = Board(8)
+        self.blue_player = HumanPlayer("Blue", "S")  
+        self.red_player = ComputerPlayer("Red", "O")  
         self.current_turn = "Blue"
         self.game_mode = "Simple"
-        self.extra_turn = False  
+        self.extra_turn = False 
 
     def reset_game(self):
         self.board.reset()
@@ -123,12 +121,15 @@ class SOSGame:
             sos_sequences = self.board.check_sos(i, j, player.get_symbol(), self.game_mode)
             self.board.update_score(player.get_symbol(), sos_sequences, self.game_mode)
 
+            if self.game_mode == "Simple" and sos_sequences:
+                return "SOS"
+
             if self.game_mode == "General" and sos_sequences:
                 self.extra_turn = True
-                return True 
+                return True  
             else:
                 self.extra_turn = False
-                return True
+                return True 
         return False
 
     def switch_turn(self):
@@ -144,14 +145,26 @@ class SOSGame:
         else:
             self.red_player.set_symbol(symbol)
 
+    def set_player_type(self, color, player_type):
+        if color == "Blue":
+            if player_type == "Human":
+                self.blue_player = HumanPlayer("Blue", self.blue_player.symbol)
+            else:
+                self.blue_player = ComputerPlayer("Blue", self.blue_player.symbol)
+        else:
+            if player_type == "Human":
+                self.red_player = HumanPlayer("Red", self.red_player.symbol)
+            else:
+                self.red_player = ComputerPlayer("Red", self.red_player.symbol)
+
     def check_winner(self):
         blue_score, red_score = self.board.get_score()
 
         if blue_score >= 3: 
             return "Blue"
-        elif red_score >= 3:
+        elif red_score >= 3:  
             return "Red"
-        elif self.board.is_full():
+        elif self.board.is_full(): 
             return "Tie"
         return None
 
@@ -173,64 +186,60 @@ class SOSGameGUI:
         self.simple_button.grid(row=0, column=1)
         self.general_button.grid(row=0, column=2)
 
+        self.board_size_label = tk.Label(self.top_frame, text="Board Size:")
+        self.board_size_label.grid(row=1, column=0)
+        self.board_size_var = tk.StringVar(value="8")
+        board_size_dropdown = tk.OptionMenu(self.top_frame, self.board_size_var, "3", "4", "5", "6", "7", "8", command=self.update_board_size)
+        board_size_dropdown.grid(row=1, column=1)
+
         self.player_frame = tk.Frame(self.root)
-        self.player_frame.grid(row=1, column=0, columnspan=3)
+        self.player_frame.grid(row=1, column=0, columnspan=3, pady=10)
 
         self.create_player_ui("Blue", self.player_frame)
         self.create_player_ui("Red", self.player_frame)
 
+        self.start_game_button = tk.Button(self.root, text="Start Game", command=self.start_game)
+        self.start_game_button.grid(row=2, column=2)
+
         self.board_frame = tk.Frame(self.root)
-        self.board_frame.grid(row=2, column=0, columnspan=3)
+        self.board_frame.grid(row=3, column=0, columnspan=3)
 
-        self.score_label = tk.Label(self.root, text="Blue: 0 - Red: 0")
-        self.score_label.grid(row=3, column=0, columnspan=3)
+        self.score_label = tk.Label(self.root, text="Blue: 0 - Red: 0", font=('Arial', 14))
+        self.score_label.grid(row=4, column=0, columnspan=3)
 
-        self.turn_label = tk.Label(self.root, text="Blue's Turn")
-        self.turn_label.grid(row=4, column=0, columnspan=3)
+        self.turn_label = tk.Label(self.root, text="Blue's Turn", font=('Arial', 14))
+        self.turn_label.grid(row=5, column=0, columnspan=3)
 
-        self.squares = []
-
-        self.create_board(self.game.board.size)
-
-        self.board_size_label = tk.Label(self.root, text="Board Size:")
-        self.board_size_label.grid(row=5, column=0)
-
-        self.board_size_var = tk.StringVar(value="8")
-        self.board_size_dropdown = tk.OptionMenu(self.root, self.board_size_var, "8", "10", "12", "14", command=self.update_board_size)
-        self.board_size_dropdown.grid(row=5, column=1)
-
-        if isinstance(self.game.red_player, ComputerPlayer):
-            self.computer_move()
+        self.new_game_button = tk.Button(self.root, text="New Game", command=self.reset_game_ui)
+        self.new_game_button.grid(row=6, column=2)
 
     def create_player_ui(self, color, parent):
         player_var = tk.StringVar(value="Human")
-        symbol_var = tk.StringVar(value="S")
+        symbol_var = tk.StringVar(value="S" if color == "Blue" else "O")
 
-        row, column = (0, 0) if color == "Blue" else (6, 1)
+        row = 0 if color == "Blue" else 1
+        column = 0 if color == "Blue" else 2
 
         tk.Label(parent, text=f"{color} Player:").grid(row=row, column=column)
+        tk.Label(parent, text="Player Type:").grid(row=row + 1, column=column)
+        player_dropdown = tk.OptionMenu(parent, player_var, "Human", "Computer", command=lambda value: self.update_player_type(color, value))
+        player_dropdown.grid(row=row + 2, column=column)
+        tk.Label(parent, text="Select Symbol:").grid(row=row + 3, column=column)
+        symbol_dropdown = tk.OptionMenu(parent, symbol_var, "S", "O", command=lambda value: self.update_player_symbol(color, value))
+        symbol_dropdown.grid(row=row + 4, column=column)
 
-        tk.Radiobutton(parent, text="Human", variable=player_var, value="Human", command=lambda: self.update_player_type(color, 'Human')).grid(row=row+1, column=column)
-        tk.Radiobutton(parent, text="Computer", variable=player_var, value="Computer", command=lambda: self.update_player_type(color, 'Computer')).grid(row=row+2, column=column)
-
-        tk.Label(parent, text="Select Symbol:").grid(row=row+3, column=column)
-        tk.Radiobutton(parent, text="S", variable=symbol_var, value="S", command=lambda: self.update_player_symbol(color, "S")).grid(row=row+4, column=column)
-        tk.Radiobutton(parent, text="O", variable=symbol_var, value="O", command=lambda: self.update_player_symbol(color, "O")).grid(row=row+5, column=column)
-
-    def update_player_type(self, color, player_type):
         if color == "Blue":
-            if player_type == "Human":
-                self.game.blue_player = HumanPlayer("Blue", self.game.blue_player.symbol)
-            else:
-                self.game.blue_player = ComputerPlayer("Blue", self.game.blue_player.symbol)
+            self.blue_player_var = player_var
+            self.blue_symbol_var = symbol_var
         else:
-            if player_type == "Human":
-                self.game.red_player = HumanPlayer("Red", self.game.red_player.symbol)
-            else:
-                self.game.red_player = ComputerPlayer("Red", self.game.red_player.symbol)
+            self.red_player_var = player_var
+            self.red_symbol_var = symbol_var
 
     def update_player_symbol(self, color, symbol):
         self.game.set_player_symbol(color, symbol)
+
+    def update_player_type(self, color, player_type):
+        self.game.set_player_type(color, player_type)
 
     def update_game_mode(self, mode):
         self.game.game_mode = mode
@@ -238,6 +247,11 @@ class SOSGameGUI:
     def update_board_size(self, size):
         self.game.board.size = int(size)
         self.reset_game_ui() 
+
+    def reset_game_ui(self):
+        self.game.reset_game()
+        self.update_score()
+        self.create_board(self.game.board.size)
 
     def create_board(self, size):
         for widget in self.board_frame.winfo_children():
@@ -250,17 +264,21 @@ class SOSGameGUI:
                 self.squares[i][j].grid(row=i, column=j)
                 self.squares[i][j].bind("<Button-1>", lambda e, x=i, y=j: self.cell_clicked(x, y))
 
-    def reset_game_ui(self):
-        self.game.reset_game()
-        self.update_score()
-        self.create_board(self.game.board.size)
-
     def update_score(self):
         blue_score, red_score = self.game.get_score()
         self.score_label.config(text=f"Blue: {blue_score} - Red: {red_score}")
 
     def cell_clicked(self, i, j):
-        if self.game.make_move(i, j):
+        if self.game.make_move(i, j) == "SOS":
+            result = self.game.check_winner()
+            if result:
+                if result == "Tie":
+                    messagebox.showinfo("Game Over", "It's a Tie!")
+                else:
+                    messagebox.showinfo("Game Over", f"{result} Wins!")
+                self.reset_game_ui() 
+                return
+        else:
             symbol = self.game.blue_player.get_symbol() if self.game.current_turn == "Blue" else self.game.red_player.get_symbol()
             color = "blue" if self.game.current_turn == "Blue" else "red"
             self.squares[i][j].config(text=symbol, fg=color)
@@ -272,13 +290,15 @@ class SOSGameGUI:
                     messagebox.showinfo("Game Over", "It's a Tie!")
                 else:
                     messagebox.showinfo("Game Over", f"{result} Wins!")
-                self.reset_game_ui() 
+                self.reset_game_ui()
                 return
 
             self.turn_label.config(text=f"{self.game.current_turn}'s Turn")
             self.game.switch_turn()
 
             if self.game.current_turn == "Red" and isinstance(self.game.red_player, ComputerPlayer):
+                self.computer_move()
+            elif self.game.current_turn == "Blue" and isinstance(self.game.blue_player, ComputerPlayer):
                 self.computer_move()
 
     def computer_move(self):
@@ -287,12 +307,21 @@ class SOSGameGUI:
         elif isinstance(self.game.red_player, ComputerPlayer) and self.game.current_turn == "Red":
             move = self.game.red_player.make_move(self.game.board.board)
         else:
-            return 
+            return
 
         if move is None:
             print("No valid moves available.")
             return
 
-        i, j = move 
-        time.sleep(1)  
+        i, j = move  
+        time.sleep(1) 
         self.cell_clicked(i, j)
+
+    def start_game(self):
+        self.game.reset_game()
+        self.reset_game_ui()
+
+        if isinstance(self.game.blue_player, ComputerPlayer):
+            self.computer_move()
+        elif isinstance(self.game.red_player, ComputerPlayer):
+            self.computer_move()
